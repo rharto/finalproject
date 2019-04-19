@@ -84,3 +84,8 @@
 .btn-outline-light {
   font-size: 10px;
 }
+
+.modal-dialog{
+  margin: auto;
+  margin-top: 10%;
+}
