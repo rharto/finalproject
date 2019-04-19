@@ -1,3 +1,7 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  /* font-weight: 200; */
+}
 
 .sidebar {
     position: relative;
@@ -6,10 +10,11 @@
     padding: 20px;
     background-color: #000;
     color: #fff;
-    opacity: .8;
+    opacity: 0.8;
     border-radius: 5px;
     z-index:2;
     margin: 10px;
+    font-size: 14px;
 }
 
 .map {
@@ -33,13 +38,16 @@
   margin-bottom: 30px;
   width: 350px;
   height: 260px;
-  opacity: 0.9;
+  opacity: 0.8;
   border-radius: 5px;
   padding: 20px;
+  font-size: 14px;
 }
 
-#info-title {
-  margin-top: 15px;
+.title {
+  font-weight:900;
+  font-size: 30px;
+  text-align: center;
 }
 
 .legend {
@@ -53,7 +61,6 @@
   border-radius: 5px;
   padding: 20px;
   box-shadow: 0 0 10px 1px #aaa;
-
 }
 
 .list {
@@ -68,7 +75,6 @@
     height: 15px;
     width: 20px;
     margin-right: 5px;
-    vertical-align: text;
 }
 
 .btn-dark {
@@ -88,4 +94,21 @@
 .modal-dialog{
   margin: auto;
   margin-top: 10%;
+}
+
+.all-caps{
+  font-variant-caps: unicase;
+  letter-spacing: 0.1em;
+}
+
+.mapboxgl-ctrl-geocoder input[type="text"] {
+    height: 30px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.1em;
+}
+
+.geocoder-icon-search {
+    height: 12px;
 }

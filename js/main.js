@@ -25,7 +25,8 @@ zoom: 13
 
 map.addControl(new MapboxGeocoder({
 accessToken: mapboxgl.accessToken,
-mapboxgl: mapboxgl
+mapboxgl: mapboxgl,
+placeholder: "search"
 }));
 /* ========================================== */
 
