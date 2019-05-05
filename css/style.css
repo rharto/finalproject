@@ -30,7 +30,7 @@ body {
 .mapboxgl-map {
   font-family: 'Roboto', sans-serif;
   font-size: 10px;
-  font-variant-caps:all-petite-caps; 
+  font-variant-caps:all-petite-caps;
   letter-spacing: 0.05em;
 }
 
@@ -122,4 +122,8 @@ body {
 
 .slider {
   margin: 10px;
+}
+
+#resetbutton {
+  float: right;
 }
