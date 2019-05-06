@@ -14,18 +14,19 @@
     <link rel='stylesheet' href='css/reset.css'/>
   </head>
   <body>
+    <div class="titlebar space">OUTREACH LOCATOR</div>
     <!-- Navbar -->
     <div class="nav">
-      <a href="https://pennmusa.github.io/MUSA_801.io/" class="btn btn-dark all-caps" role="button" target="_parent">BACK TO MUSA</a>
-      <button type="button" class="btn btn-dark all-caps" data-toggle="modal" data-target="#exampleModal">HELP</button>
-      <button type="button" class="btn btn-dark all-caps" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">MAP OPTIONS</button>
+      <a href="https://pennmusa.github.io/MUSA_801.io/" class="btn btn-dark unicase space" role="button" target="_parent">BACK TO MUSA</a>
+      <button type="button" class="btn btn-dark unicase space" data-toggle="modal" data-target="#exampleModal">HELP</button>
+      <button type="button" class="btn btn-dark unicase space " data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">MAP OPTIONS</button>
     </div>
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title title all-caps" id="exampleModalLabel">HOW TO USE THIS APP</h5>
+            <h5 class="modal-title space" id="exampleModalLabel">HOW TO USE THIS APP</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -34,15 +35,15 @@
             ...
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-dark btn-secondary all-caps" data-dismiss="modal">CLOSE</button>
+            <button type="button" class="btn btn-dark btn-secondary unicase space" data-dismiss="modal">CLOSE</button>
           </div>
         </div>
       </div>
     </div>
     <!-- Legend -->
     <div class="legend">
-      <ul class="list"><h6 class="all-caps">FIRE RISK</h6>
-        <li><span style='background: #0D0887'></span>1</li>
+      <ul class="list"><p class="center space">FIRE RISK</p>
+        <li><span style='background: #0D0887'></span>1 (LOW)</li>
         <li><span style='background: #47039F'></span>2</li>
         <li><span style='background: #7301A8'></span>3</li>
         <li><span style='background: #9C179E'></span>4</li>
@@ -51,15 +52,17 @@
         <li><span style='background: #ED7953'></span>7</li>
         <li><span style='background: #FA9E3B'></span>8</li>
         <li><span style='background: #FDC926'></span>9</li>
-        <li><span style='background: #F0F921'></span>10</li>
+        <li><span style='background: #F0F921'></span>10 (HIGH)</li>
       </ul>
     </div>
     <!-- Collapsible Sidebar -->
     <div class="collapse" id="collapseExample">
       <div class="sidebar">
-              <h2 class="title all-caps">OUTREACH LOCATOR</h2>
-              Include a bar, a graph, and location buttons. Also - buffers. <br><br>
-              Filter by risk:
+              <h3 class="center title">MAP OPTIONS</h3><br>
+              <p>
+                <label for="threshold">Risk levels included:</label>
+                <input type="text" id="threshold">
+              </p>
               <div id="risk-threshold" class="slider"></div>
               <br>
               <div id='checkboxes'>
@@ -72,7 +75,7 @@
                    </label>
                  </div>
                  <div class="form-check">
-                   <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                   <input class="form-check-input" type="checkbox" value="" id="schools">
                    <label class="form-check-label" for="defaultCheck1">
                      Schools
                    </label>
@@ -84,15 +87,18 @@
                    </label>
                  </div>
                  <div class="form-check">
-                   <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                   <input class="form-check-input" type="checkbox" value="" id="worship">
                    <label class="form-check-label" for="defaultCheck1">
                      Places of Worship
                    </label>
                  </div> <br>
-                 Buffer distance:
+                 <p>
+                   <label for="buffer-text">Buffer distance: </label>
+                   <input type="text" id="buffer-text">
+                 </p>
                  <div id="buffer" class="slider"></div> <br>
-                <button type="button" class="btn btn-outline-light all-caps">UPDATE MAP</button>
-                <button type="button" class="btn btn-outline-light all-caps" id="resetbutton">RESET MAP</button>
+                <button type="button" class="btn btn-outline-light unicase space" id="update-map">UPDATE MAP</button>
+                <button type="button" class="btn btn-outline-light unicase space" id="resetbutton">RESET MAP</button>
               </div>
       </div>
     </div>
@@ -102,7 +108,6 @@
     <div class="map-overlay info">
       <div id="info-box"></div>
     </div>
-    <div id='popbox' class='popbox'></div>
     <!-- Javascript imports -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js" integrity="sha256-obZACiHd7gkOk9iIL/pimWMTJ4W/pBsKu+oZnSeBIek=" crossorigin="anonymous"></script>
