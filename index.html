@@ -32,12 +32,21 @@
             </button>
           </div>
           <div class="modal-body">
-            Welcome to our Smoke Detector Outreach Locator!
-            <br>
-            There are several elements to the map:
-            - Choose the level of risk you'd like to view, from 1 (low) to 10 (high).
-            - Check which type of location you'd like to use for your outreach.
-            - Choose a buffer size to
+            <p id="p1">Welcome to our Smoke Detector Outreach Locator!</p>
+            <p id="p2">Use this map to determine where to target smoke detector outreach:
+            <ul id="p2">
+            <li>Choose which levels of fire risk you'd like to include, from 1 (low) to 10 (high)</li>
+            <li>Check which type of location you'd like to use for your outreach</li>
+            <li>Choose a buffer size to see how many people your outreach can potentially impact</li>
+            <li>Hit "Update Map"</li></ul>
+            <div id="p2">Reset the map to clear the data.</div>
+          </p>
+            <p id="p2">Other information:
+            <br><ul id="p2">
+            <li>Hover over a grid cell to get data about that particular area</li>
+            <li>Population data is interpolated from US Census information</li>
+          </ul></p>
+              <p id="p2">This application uses predicted fire risk data from an algorithm built by University of Pennsylvania masters students. To read more about how fire risk has been defined and what motivated this project, please hit "Back to Musa" to read our report.</p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-dark btn-secondary unicase space" data-dismiss="modal">CLOSE</button>

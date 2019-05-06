@@ -165,3 +165,11 @@ input[type='text'] {
 #info-box {
   display: table-row;
 }
+
+#p1 {
+  font-style: bold;
+}
+
+#p2 {
+  font-size: 13px;
+}
