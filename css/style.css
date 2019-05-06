@@ -148,3 +148,9 @@ display: none;
 #info-box {
   display: table-row;
 }
+
+#threshold {
+  background-color: #000;
+  border: none;
+  font-style: italic;
+}

@@ -59,7 +59,10 @@
       <div class="sidebar">
               <h2 class="title all-caps">OUTREACH LOCATOR</h2>
               Include a bar, a graph, and location buttons. Also - buffers. <br><br>
-              Filter by risk:
+              <p>
+                <label for="threshold">Risk levels included:</label>
+                <input type="text" id="threshold">
+              </p>
               <div id="risk-threshold" class="slider"></div>
               <br>
               <div id='checkboxes'>
@@ -72,7 +75,7 @@
                    </label>
                  </div>
                  <div class="form-check">
-                   <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                   <input class="form-check-input" type="checkbox" value="" id="schools">
                    <label class="form-check-label" for="defaultCheck1">
                      Schools
                    </label>
@@ -84,14 +87,14 @@
                    </label>
                  </div>
                  <div class="form-check">
-                   <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                   <input class="form-check-input" type="checkbox" value="" id="worship">
                    <label class="form-check-label" for="defaultCheck1">
                      Places of Worship
                    </label>
                  </div> <br>
                  Buffer distance:
                  <div id="buffer" class="slider"></div> <br>
-                <button type="button" class="btn btn-outline-light all-caps">UPDATE MAP</button>
+                <button type="button" class="btn btn-outline-light all-caps" id="update-map">UPDATE MAP</button>
                 <button type="button" class="btn btn-outline-light all-caps" id="resetbutton">RESET MAP</button>
               </div>
       </div>
@@ -102,7 +105,7 @@
     <div class="map-overlay info">
       <div id="info-box"></div>
     </div>
-    <div id='popbox' class='popbox'></div>
+    <div id='popbox' class='map-overlay popbox'></div>
     <!-- Javascript imports -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js" integrity="sha256-obZACiHd7gkOk9iIL/pimWMTJ4W/pBsKu+oZnSeBIek=" crossorigin="anonymous"></script>
