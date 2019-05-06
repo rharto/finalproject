@@ -1,8 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "social_center",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::4269" } },
-"features": [
-{ "type": "Feature", "properties": { "id": "4573407302", "lat": 38.2306713, "lon": -85.7590251, "amenity": "social_facility" }, "geometry": { "type": "Point", "coordinates": [ -85.7590251, 38.2306713 ] } }
-]
-}
