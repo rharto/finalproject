@@ -33,9 +33,9 @@ var overlay = document.getElementById('popbox');
 var popup = new mapboxgl.Popup({
   closeButton: false
 });
-var riskLayers = ['predictions-all','predictions-q1','predictions-q2','predictions-q3','predictions-q4',
-                  'predictions-q5','predictions-q6','predictions-q7','predictions-q8','predictions-q9','predictions-q10',
-                  'churches', 'schools'];
+var riskLayers = ["predictions-all","predictions-q1","predictions-q2","predictions-q3","predictions-q4",
+                  "predictions-q5","predictions-q6","predictions-q7","predictions-q8","predictions-q9","predictions-q10",
+                  "churches","schools"];
 
 /* ============= Helper Functions ============== */
 // Compile inputs from sidebar into a dictionary.
@@ -54,8 +54,6 @@ var readInput = function() {
 var addOption = function(checkedTrue, layerName) {
   if(checkedTrue) {
     map.setLayoutProperty(layerName, 'visibility', "visible");
-  } else {
-    map.setLayoutProperty(layerName, 'visibility', "none");
   }
 };
 
@@ -77,50 +75,51 @@ var includeRisk = function() {
   if(mapOptions) {
     var include = mapOptions.riskLow;
     while(include <= mapOptions.riskHigh) {
+      console.log(include);
       map.setLayoutProperty(riskLayers[include], 'visibility', "visible");
+      include++;
     }
   }
 }
 
 // Updates the map based on user input when the Update Map button is clicked.
 var updateMap = function() {
-  addOption(churchesChecked, 'churches');
-  addOption(schoolsChecked, 'schools');
+  resetMap();
+  addOption(churchesChecked, "churches");
+  addOption(schoolsChecked, "schools");
 
-  map.on('load', function() {
-    map.getCanvas().style.cursor = 'default';
-    includeRisk();
-    map.on('mousemove', function(e) {
-      hoverOptions(churchesChecked, 'churches', e);
-      hoverOptions(schoolsChecked, 'schools', e);
+  map.getCanvas().style.cursor = 'default';
+  includeRisk();
+  map.on('mousemove', function(e) {
+    hoverOptions(churchesChecked, "churches", e);
+    hoverOptions(schoolsChecked, "schools", e);
 
-      var features = map.queryRenderedFeatures(e.point, { layers: riskLayers });
-      if (features.length>0) {
-        $('.map-overlay').css('display','table');
-        var thisRiskLevel = features[0].properties.quantile;
-        var thisRisk = Math.round(features[0].properties.predEnsemble*100);
-        document.getElementById('info-box').innerHTML = '<h2 class="title all-caps">LOCAL VIEW</h2><br>Local fire risk: <em>'+thisRisk
-                                                        +'%</em><br>'+'Risk category: <em>'+thisRiskLevel+'</em>';
-        overlay.innerHTML = '';
-        var title = document.createElement('strong');
-        title.textContent = 'Risk category: '+thisRiskLevel;
-        overlay.appendChild(title);
-        overlay.style.display = 'block';
+    var features = map.queryRenderedFeatures(e.point, { layers: riskLayers });
+    if (features.length>0) {
+      $('.map-overlay').css('display','table');
+      var thisRiskLevel = features[0].properties.quantile;
+      var thisRisk = Math.round(features[0].properties.predEnsemble*100);
+      document.getElementById('info-box').innerHTML = '<h2 class="title all-caps">LOCAL VIEW</h2><br>Local fire risk: <em>'+thisRisk
+                                                      +'%</em><br>'+'Risk category: <em>'+thisRiskLevel+'</em>';
+      overlay.innerHTML = '';
+      var title = document.createElement('strong');
+      title.textContent = 'Risk category: '+thisRiskLevel;
+      overlay.appendChild(title);
+      overlay.style.display = 'block';
 
-        map.setFilter('predictions-all', ['==', 'quantile', thisRiskLevel]);
-        map.setLayoutProperty('predictions-all', 'visibility', "visible");
-      } else {
-        $('.map-overlay').css('display','none');
-      }
-    });
+      map.setFilter('predictions-all', ['==', 'quantile', thisRiskLevel]);
+      map.setLayoutProperty("predictions-all", 'visibility', "visible");
+    } else {
+      $('.map-overlay').css('display','none');
+    }
+  });
 
-    map.on('mouseleave', function() {
-      map.getCanvas().style.cursor = '';
-      popup.remove();
-      map.setFilter('predictions-all', ['==', 'quantile', '']);
-      map.setLayoutProperty('predictions-all', 'visibility', "none");
-      overlay.style.display = 'none';
-    });
+  map.on('mouseleave', function() {
+    map.getCanvas().style.cursor = '';
+    popup.remove();
+    map.setFilter("predictions-all", ['==', 'quantile', '']);
+    map.setLayoutProperty('predictions-all', 'visibility', "none");
+    overlay.style.display = 'none';
   });
 }
 
@@ -132,14 +131,12 @@ var resetMap = function() {
 }
 
 /* ============= User Interactivity ============== */
-// $(document).ready(function() {
-    $('#update-map').click(function() {
-      mapOptions = readInput();
-      churchesChecked = mapOptions.churches;
-      schoolsChecked = mapOptions.schools;
-      updateMap();
-    });
-    $('#resetbutton').click(function() {
-      resetMap();
-    });
-// });
+$('#update-map').click(function() {
+  mapOptions = readInput();
+  churchesChecked = mapOptions.churches;
+  schoolsChecked = mapOptions.schools;
+  updateMap();
+});
+$('#resetbutton').click(function() {
+  resetMap();
+});
