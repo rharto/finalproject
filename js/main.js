@@ -43,7 +43,7 @@ var popup = new mapboxgl.Popup({
 });
 var riskLayers = ["predictions-all","predictions-q1","predictions-q2","predictions-q3","predictions-q4",
                   "predictions-q5","predictions-q6","predictions-q7","predictions-q8","predictions-q9","predictions-q10",
-                  "churches","schools"];
+                  "facparks","facschools","faclibraries"];
 
 /* ============= Helper Functions ============== */
 // Compile inputs from sidebar into a dictionary.
@@ -52,7 +52,8 @@ var readInput = function() {
     riskLow : $('#risk-threshold').slider('values', 0),
     riskHigh : $('#risk-threshold').slider('values', 1),
     schools : $('#schools').change(function() { $(this).val($(this).is(':checked')); }).change().val()=='true',
-    churches : $('#worship').change(function() { $(this).val($(this).is(':checked')); }).change().val()=='true',
+    libraries : $('#libraries').change(function() { $(this).val($(this).is(':checked')); }).change().val()=='true',
+    parks : $('#parks').change(function() { $(this).val($(this).is(':checked')); }).change().val()=='true',
     buffer : $("#buffer").slider('option', 'value')
   };
   return inputs;
@@ -69,9 +70,20 @@ var addOption = function(checkedTrue, layerName) {
 var hoverOptions = function(checkedTrue, layerName, e) {
   if (checkedTrue) {
     var locations = map.queryRenderedFeatures(e.point, { layers: [layerName] });
+    var type;
+    switch(layerName) {
+      case 'facschools':
+        type='School'
+        break;
+      case 'facparks':
+        type='Park';
+        break;
+      default:
+        type='Library';
+    }
     if (locations.length>0) {
       popup.setLngLat(e.lngLat)
-      .setText(locations[0].properties.amenity)
+      .setHTML("<b>Facility type:</b> "+type+"<br><b>Name:</b> "+locations[0].properties.FACNAME+'<br><b>Address:</b> '+locations[0].properties.ADDRESS)
       .addTo(map);
     }
   }
@@ -90,25 +102,50 @@ var includeRisk = function() {
   }
 }
 
+// Reset map to just fishnet outline.
+var resetMap = function() {
+  riskLayers.forEach(function(layer) {
+    map.setLayoutProperty(layer, 'visibility', "none");
+  });
+}
+
 // Updates the map based on user input when the Update Map button is clicked.
 var updateMap = function() {
   resetMap();
-  addOption(churchesChecked, "churches");
-  addOption(schoolsChecked, "schools");
+  addOption(librariesChecked, "faclibraries");
+  addOption(parksChecked, "facparks");
+  addOption(schoolsChecked, "facschools");
 
   map.getCanvas().style.cursor = 'default';
   includeRisk();
   map.on('mousemove', function(e) {
-    hoverOptions(churchesChecked, "churches", e);
-    hoverOptions(schoolsChecked, "schools", e);
+    hoverOptions(librariesChecked, "faclibraries", e);
+    hoverOptions(parksChecked, "facparks", e);
+    hoverOptions(schoolsChecked, "facschools", e);
 
-    var features = map.queryRenderedFeatures(e.point, { layers: riskLayers });
-    if (features.length>0) {
+    var gridcells = map.queryRenderedFeatures(e.point, { layers: riskLayers.slice(0, riskLayers.length-3) });
+    if (gridcells.length>0) {
       $('.map-overlay').css('display','table');
-      var thisRiskLevel = features[0].properties.quantile;
-      var thisRisk = Math.round(features[0].properties.predEnsemble*100);
+      var thisRiskLevel = gridcells[0].properties.quantile;
+      var thisRisk = Math.round(gridcells[0].properties.predEnsemble*100);
+      var wall;
+      switch(gridcells[0].properties.WALL_TYPE) {
+        case '1':
+          wall='Frame';
+          break;
+        case '2':
+          wall='Brick';
+          break;
+        default:
+          wall='Other';
+      }
+      var distElec = Math.round(gridcells[0].properties['dist.elec']);
       document.getElementById('info-box').innerHTML = '<h3 class="center title">LOCAL VIEW</h3><br>Local fire risk: <em>'+thisRisk
-                                                      +'%</em><br>'+'Risk category: <em>'+thisRiskLevel+'</em>';
+                                                      +'%</em><br>'+'Risk category: <em>'+thisRiskLevel+'</em>'
+                                                      +'</em><br>'+'Count of past fires: <em>'+gridcells[0].properties.countFire+'</em>'
+                                                      +'</em><br>'+'Distance to nearest electrical permit: <em>'+distElec+' feet</em>'
+                                                      +'</em><br>'+'Median household income: <em>$'+gridcells[0].properties.MedHHInc+'</em>'
+                                                      +'</em><br>'+'Majority property wall type: <em>'+wall+'</em>';
 
       map.setFilter('predictions-all', ['==', 'quantile', thisRiskLevel]);
       map.setLayoutProperty("predictions-all", 'visibility', "visible");
@@ -125,24 +162,20 @@ var updateMap = function() {
   });
 }
 
-// Reset map to just fishnet outline.
-var resetMap = function() {
-  riskLayers.forEach(function(layer) {
-    map.setLayoutProperty(layer, 'visibility', "none");
-  });
-}
-
 /* ============= User Interactivity ============== */
 $(document).ready(function() {
   $('#exampleModal').modal('show');
   $('#collapseExample').collapse('in');
 });
+
 $('#update-map').click(function() {
   mapOptions = readInput();
-  churchesChecked = mapOptions.churches;
+  librariesChecked = mapOptions.libraries;
+  parksChecked = mapOptions.parks;
   schoolsChecked = mapOptions.schools;
   updateMap();
 });
+
 $('#resetbutton').click(function() {
   resetMap();
 });
