@@ -24,12 +24,20 @@ $("#risk-threshold").slider({
   }
 });
 $("#threshold").val($('#risk-threshold').slider('values', 0)+" - "+$('#risk-threshold').slider('values', 1));
-$("#buffer").slider({ });
+$("#buffer").slider({
+  orientation: "horizontal",
+  range: "min",
+  max: 4,
+  value: 2,
+  slide: function(event, ui) {
+    $("#buffer-text").val((ui.value/4)+" miles");
+  }
+});
+$("#buffer-text").val($('#buffer').slider('value')/4+" miles");
 
 /* ============= Global variables ============== */
 var mapOptions, hoverCell;
 var churchesChecked, schoolsChecked = false;
-var overlay = document.getElementById('popbox');
 var popup = new mapboxgl.Popup({
   closeButton: false
 });
@@ -99,13 +107,8 @@ var updateMap = function() {
       $('.map-overlay').css('display','table');
       var thisRiskLevel = features[0].properties.quantile;
       var thisRisk = Math.round(features[0].properties.predEnsemble*100);
-      document.getElementById('info-box').innerHTML = '<h2 class="title all-caps">LOCAL VIEW</h2><br>Local fire risk: <em>'+thisRisk
+      document.getElementById('info-box').innerHTML = '<h3 class="center title">LOCAL VIEW</h3><br>Local fire risk: <em>'+thisRisk
                                                       +'%</em><br>'+'Risk category: <em>'+thisRiskLevel+'</em>';
-      overlay.innerHTML = '';
-      var title = document.createElement('strong');
-      title.textContent = 'Risk category: '+thisRiskLevel;
-      overlay.appendChild(title);
-      overlay.style.display = 'block';
 
       map.setFilter('predictions-all', ['==', 'quantile', thisRiskLevel]);
       map.setLayoutProperty("predictions-all", 'visibility', "visible");
@@ -119,7 +122,6 @@ var updateMap = function() {
     popup.remove();
     map.setFilter("predictions-all", ['==', 'quantile', '']);
     map.setLayoutProperty('predictions-all', 'visibility', "none");
-    overlay.style.display = 'none';
   });
 }
 
@@ -131,6 +133,10 @@ var resetMap = function() {
 }
 
 /* ============= User Interactivity ============== */
+$(document).ready(function() {
+  $('#exampleModal').modal('show');
+  $('#collapseExample').collapse('in');
+});
 $('#update-map').click(function() {
   mapOptions = readInput();
   churchesChecked = mapOptions.churches;
