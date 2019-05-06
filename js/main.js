@@ -13,80 +13,133 @@ mapboxgl: mapboxgl,
 placeholder: "search"
 }));
 
+/* ============= Interactive Elements setup ============== */
+$("#risk-threshold").slider({
+  range: true,
+  min: 1,
+  max: 10,
+  values: [5, 10],
+  slide: function(event, ui) {
+    $("#threshold").val(ui.values[0]+" - "+ui.values[1]);
+  }
+});
+$("#threshold").val($('#risk-threshold').slider('values', 0)+" - "+$('#risk-threshold').slider('values', 1));
+$("#buffer").slider({ });
+
+/* ============= Global variables ============== */
+var mapOptions, hoverCell;
+var churchesChecked, schoolsChecked = false;
+var overlay = document.getElementById('popbox');
 var popup = new mapboxgl.Popup({
   closeButton: false
 });
+var riskLayers = ['predictions-all','predictions-q1','predictions-q2','predictions-q3','predictions-q4',
+                  'predictions-q5','predictions-q6','predictions-q7','predictions-q8','predictions-q9','predictions-q10',
+                  'churches', 'schools'];
 
-var overlay = document.getElementById('popbox');
-var schools, churches, hoverCell;
+/* ============= Helper Functions ============== */
+// Compile inputs from sidebar into a dictionary.
+var readInput = function() {
+  var inputs = {
+    riskLow : $('#risk-threshold').slider('values', 0),
+    riskHigh : $('#risk-threshold').slider('values', 1),
+    schools : $('#schools').change(function() { $(this).val($(this).is(':checked')); }).change().val()=='true',
+    churches : $('#worship').change(function() { $(this).val($(this).is(':checked')); }).change().val()=='true',
+    buffer : $("#buffer").slider('option', 'value')
+  };
+  return inputs;
+}
 
-/* ============= JQuery sliders ============== */
-$( "#risk-threshold" ).slider({
-  range: true
-});
-$( "#buffer" ).slider({ });
+// When the checkbox for an option is selected, that layer will be shown on the map.
+var addOption = function(checkedTrue, layerName) {
+  if(checkedTrue) {
+    map.setLayoutProperty(layerName, 'visibility', "visible");
+  } else {
+    map.setLayoutProperty(layerName, 'visibility', "none");
+  }
+};
 
-/* ============= Mapbox options ============== */
-map.on('load', function() {
-  map.setPaintProperty("predictions", 'fill-opacity', ["case",["boolean",["feature-state","hover"],false],1,0.5]);
-  // schools = map.querySourceFeatures('composite', { 'sourceLayer': 'schools-a3mzwl' });
-  // churches = map.querySourceFeatures('composite', { 'sourceLayer': 'churches-2dd7vq' });
-
-  map.addSource('predictions', {
-    "type": "vector",
-    "url": "mapbox://mayutanaka.1xmca989/"
-  });
-  map.addLayer({
-    "id": "predictions-highlighted",
-    "type": "fill",
-    "source": "predictions",
-    "source-layer": "predEnsembling-860fuy",
-    "paint": {
-      "fill-opacity": 1
-    },
-    "filter": ["==", "quantile", ""]
-  }, 'poi-label'); // Place polygon under these labels.
-
-  // Highlight hover: https://docs.mapbox.com/mapbox-gl-js/example/query-similar-features/
-  map.on('mousemove', function(e) {
-    map.getCanvas().style.cursor = 'pointer';
-
-    var locations = map.queryRenderedFeatures(e.point, { layers: ['schools', 'churches'] });
+// Hovering over a location shows you information about that point.
+var hoverOptions = function(checkedTrue, layerName, e) {
+  if (checkedTrue) {
+    var locations = map.queryRenderedFeatures(e.point, { layers: [layerName] });
     if (locations.length>0) {
       popup.setLngLat(e.lngLat)
       .setText(locations[0].properties.amenity)
       .addTo(map);
     }
+  }
+};
 
-    var features = map.queryRenderedFeatures(e.point, { layers: ['predictions'] });
-      if (features.length>0) {
-      var risklevel = features[0].properties.quantile;
-      var relatedFeatures = map.querySourceFeatures('predictions', {
-        sourceLayer: 'predEnsembling-860fuy',
-        filter: ['==', 'quantile', risklevel]
-      });
-
-      $('.map-overlay').css('display','table');
-      var localrisk = Math.round(features[0].properties.predEnsemble*100);
-      document.getElementById('info-box').innerHTML = '<h2 class="title all-caps">LOCAL VIEW</h2><br>Local fire risk: <em>'+localrisk
-                                                      +'%</em><br>'+'Risk category: <em>'+risklevel+'</em>';
-
-      overlay.innerHTML = '';
-      var title = document.createElement('strong');
-      title.textContent = 'Risk category: '+risklevel+' ('+relatedFeatures.length+'other cells)';
-      overlay.appendChild(title);
-      overlay.style.display = 'block';
-
-      map.setFilter('predictions-highlighted', ['==', 'quantile', risklevel]);
-    } else {
-      $('.map-overlay').css('display','none');
+// Include risk category layers within user-defined threshold.
+// Highlight hover functionality from: https://docs.mapbox.com/mapbox-gl-js/example/query-similar-features/
+var includeRisk = function() {
+  if(mapOptions) {
+    var include = mapOptions.riskLow;
+    while(include <= mapOptions.riskHigh) {
+      map.setLayoutProperty(riskLayers[include], 'visibility', "visible");
     }
-  });
+  }
+}
 
-  map.on('mouseleave', 'predictions', function() {
-    map.getCanvas().style.cursor = '';
-    popup.remove();
-    map.setFilter('predictions-highlighted', ['==', 'quantile', '']);
-    overlay.style.display = 'none';
+// Updates the map based on user input when the Update Map button is clicked.
+var updateMap = function() {
+  addOption(churchesChecked, 'churches');
+  addOption(schoolsChecked, 'schools');
+
+  map.on('load', function() {
+    map.getCanvas().style.cursor = 'default';
+    includeRisk();
+    map.on('mousemove', function(e) {
+      hoverOptions(churchesChecked, 'churches', e);
+      hoverOptions(schoolsChecked, 'schools', e);
+
+      var features = map.queryRenderedFeatures(e.point, { layers: riskLayers });
+      if (features.length>0) {
+        $('.map-overlay').css('display','table');
+        var thisRiskLevel = features[0].properties.quantile;
+        var thisRisk = Math.round(features[0].properties.predEnsemble*100);
+        document.getElementById('info-box').innerHTML = '<h2 class="title all-caps">LOCAL VIEW</h2><br>Local fire risk: <em>'+thisRisk
+                                                        +'%</em><br>'+'Risk category: <em>'+thisRiskLevel+'</em>';
+        overlay.innerHTML = '';
+        var title = document.createElement('strong');
+        title.textContent = 'Risk category: '+thisRiskLevel;
+        overlay.appendChild(title);
+        overlay.style.display = 'block';
+
+        map.setFilter('predictions-all', ['==', 'quantile', thisRiskLevel]);
+        map.setLayoutProperty('predictions-all', 'visibility', "visible");
+      } else {
+        $('.map-overlay').css('display','none');
+      }
+    });
+
+    map.on('mouseleave', function() {
+      map.getCanvas().style.cursor = '';
+      popup.remove();
+      map.setFilter('predictions-all', ['==', 'quantile', '']);
+      map.setLayoutProperty('predictions-all', 'visibility', "none");
+      overlay.style.display = 'none';
+    });
   });
-});
+}
+
+// Reset map to just fishnet outline.
+var resetMap = function() {
+  riskLayers.forEach(function(layer) {
+    map.setLayoutProperty(layer, 'visibility', "none");
+  });
+}
+
+/* ============= User Interactivity ============== */
+// $(document).ready(function() {
+    $('#update-map').click(function() {
+      mapOptions = readInput();
+      churchesChecked = mapOptions.churches;
+      schoolsChecked = mapOptions.schools;
+      updateMap();
+    });
+    $('#resetbutton').click(function() {
+      resetMap();
+    });
+// });
