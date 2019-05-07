@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Louisville Fires</title>
+    <link rel="icon" href="data/louisville_fire-01.png">
     <!-- CSS imports -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.css" integrity="sha256-iYUgmrapfDGvBrePJPrMWQZDcObdAcStKBpjP3Az+3s=" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -23,7 +24,7 @@
     </div>
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
+      <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title space" id="exampleModalLabel">HOW TO USE THIS APP</h5>
@@ -32,7 +33,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <p id="p1">Welcome to our Smoke Detector Outreach Locator!</p>
+            <p id="p1"><b>Welcome to our Smoke Detector Outreach Locator!</b></p>
             <p id="p2">Use this map to determine where to target smoke detector outreach:
             <ul id="p2">
             <li>Choose which levels of fire risk you'd like to include, from 1 (low) to 10 (high)</li>
@@ -46,7 +47,8 @@
             <li>Hover over a grid cell to get data about that particular area</li>
             <li>Population data is interpolated from US Census information</li>
           </ul></p>
-              <p id="p2">This application uses predicted fire risk data from an algorithm built by University of Pennsylvania masters students. To read more about how fire risk has been defined and what motivated this project, please hit "Back to Musa" to read our report.</p>
+              <p id="p2"><em>This application uses predicted fire risk data from an algorithm built by University of Pennsylvania masters students.
+                To read more about how fire risk has been defined and what motivated this project, please hit "Back to Musa" to read our report.</em></p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-dark btn-secondary unicase space" data-dismiss="modal">CLOSE</button>
@@ -126,6 +128,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.0.0/mapbox-gl-geocoder.min.js'></script>
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
+    <script src='https://api.mapbox.com/mapbox.js/plugins/turf/v3.0.11/turf.min.js'></script>
     <script src="js/main.js"></script>
   </body>
 </html>

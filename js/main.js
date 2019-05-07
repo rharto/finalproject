@@ -109,15 +109,66 @@ var resetMap = function() {
   });
 }
 
+// Find total population within user-defined buffer of a clicked facility.
+var findImpact = function() {
+  map.addSource('fac-buffer', {
+    "type": "vector",
+    "url": "mapbox://mayutanaka.ddcc56um"
+  });
+  map.addLayer({
+    "id": "fac-in-buffer",
+    "type": "fill",
+    "source": "fac-buffer",
+    "source-layer": "predictions-dwcy4o",
+    "paint": {
+      "fill-outline-color": "#000000",
+      "fill-opacity": 1
+    },
+    "filter": ["in", "COUNTY", ""] //CHANGE HERE
+  }, 'poi-label');
+    map.on('click', function(e) {
+  var facFeatures = map.queryRenderedFeatures(e.point, { layers: riskLayers.slice(riskLayers.length-3) });
+  if (!facFeatures.length) { return; }
+  var facility = facFeatures[0];
+
+  // Using Turf, find the nearest hospital to library clicked
+  var inBuffer = turf.nearest(facility, hospitals);
+
+  // If a nearest library is found
+  if (nearestHospital !== null) {
+    // Update the 'nearest-library' data source to include
+    // the nearest library
+    map.getSource('nearest-hospital').setData({
+      type: 'FeatureCollection',
+      features: [
+        nearestHospital
+      ]
+    });
+    // Create a new circle layer from the 'nearest-library' data source
+    map.addLayer({
+      id: 'nearest-hospital',
+      type: 'circle',
+      source: 'nearest-hospital',
+      paint: {
+        'circle-radius': 12,
+        'circle-color': '#486DE0'
+      }
+    }, 'hospitals');
+  }
+});
+}
+
 // Updates the map based on user input when the Update Map button is clicked.
 var updateMap = function() {
   resetMap();
+
   addOption(librariesChecked, "faclibraries");
   addOption(parksChecked, "facparks");
   addOption(schoolsChecked, "facschools");
 
   map.getCanvas().style.cursor = 'default';
   includeRisk();
+
   map.on('mousemove', function(e) {
     hoverOptions(librariesChecked, "faclibraries", e);
     hoverOptions(parksChecked, "facparks", e);
