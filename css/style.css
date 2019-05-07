@@ -1,6 +1,9 @@
+html {
+  overflow: hidden;
+}
+
 body {
   font-family: 'Roboto', sans-serif;
-  /* font-weight: 200; */
 }
 
 .titlebar {
@@ -99,11 +102,6 @@ body {
 
 .btn-outline-light {
   font-size: 10px;
-}
-
-.modal-dialog{
-  margin: auto;
-  margin-top: 10%;
 }
 
 .unicase {
