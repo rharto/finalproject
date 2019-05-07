@@ -14,6 +14,7 @@ body {
   background-color: black;
   color: white;
   padding-top: 9px;
+  font-weight: bold;
 }
 
 .sidebar {
@@ -117,7 +118,8 @@ body {
 }
 
 .title {
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  font-weight: bold;
 }
 
 .mapboxgl-ctrl-geocoder input[type="text"] {
